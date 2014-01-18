@@ -6,30 +6,30 @@ from utils import *
 
 app = Flask(__name__)
 
-@app.route('/pnr/<pnr>')
-def pnr_api(pnr):
+@app.route('/codechef/<id>')
+def codechef_api(id):
 	"""
-	Returns the PNR data in JSON after fetching from Indian Railways website.
+	Returns the user stat in JSON after fetching from Codechef.
 	"""
-	if is_pnr_valid(pnr):
-		response = requests.post(BASE_URL, data={PARAM_NAME : pnr})
+	if is_user_valid(id):
+		response = requests.post(BASE_URL, data={PARAM_NAME : id})
 		if response.status_code is 200:
-			pnr_data = parse_html(response.content)
+			user_data = parse_html(response.content)
 
-			if not pnr_data:
-				return jsonify({'status' : 'PNR FLUSHED / SERVICE UNAVAILABLE',
+			if not user_data:
+				return jsonify({'status' : 'Retry',
 				'data' : {}
 					})
 
 			return jsonify({'status' : 'OK', 
-				'data' : build_response_dict(pnr_data)
+				'data' : build_response_dict(user_data)
 				})
 		else:
 			return jsonify({'status' : 'ERROR',
 				'data' : {}
 				})
 	else:
-		return jsonify({'status' : 'INVALID PNR',
+		return jsonify({'status' : 'INVALID username',
 				'data' : {}
 			})
 

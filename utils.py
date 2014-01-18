@@ -4,78 +4,41 @@ import cjson
 
 from settings import *
 
-with open('station_codes.json') as codes:
-	station_codes = cjson.decode(codes.read())
-
-def is_pnr_valid(pnr):
+def is_user_valid(id):
 	"""
-	Checks if the PNR is valid.
+	Checks if the USERNAME is valid.
 	"""
-	r = re.compile(PNR_REGEX_STRICT)
-	return bool(r.match(pnr))
-
-def despace(string):
-	"""
-	Removes extraneous spaces.
-	"""
-	return re.sub(r'\s+', ' ', string)
-
-def groupify_passengers(passenger_list):
-	"""
-	Groups passenger data.
-	"""
-	count = len(passenger_list)/3
-	groups = []
-	for i in range(count):
-		del passenger_list[0]
-		groups.append((passenger_list.pop(0), passenger_list.pop(0)))
-
-	return groups
+	r = re.compile(ID_REGEX_STRICT)
+	return bool(r.match(id))
 
 def parse_html(html):
 	"""
 	Takes the HTML and spits out the list of fields
 	relevant to the status.
-
-	And please forgive the ugly code. Parsing such awful HTML is indeed ugly.
 	"""
 	tree = parser.fromstring(html)
 	elements = tree.find_class(MAGIC_CLASS)
-
 	if not elements:
 		return None
 
-	fields = []
+	long_global=elements[0].getchildren()[1].getchildren()[1].getchildren()[0].getchildren()[0].text
+	long_country=elements[0].getchildren()[1].getchildren()[1].getchildren()[1].getchildren()[0].text
+    long_rating=elements[0].getchildren()[1].getchildren()[2].text
 
-	for element in elements[:-1]:
-		fields.append(despace(element.text or element.getchildren()[0].text).strip())
+    short_global=elements[0].getchildren()[2].getchildren()[1].getchildren()[0].getchildren()[0].text
+    short_country=elements[0].getchildren()[2].getchildren()[1].getchildren()[1].getchildren()[0].text
+    short_rating=elements[0].getchildren()[1].getchildren()[2].text
 
-	return (fields[:3], fields[3:7], fields[7:8], fields[8:-1], fields[-1])
+	return (long_global,long_country,long_rating,short_global,short_country,short_rating)
 
 def build_response_dict(data):
 	"""
-	Takes in the field parameters and builds JSON for spitting out.
-	This is kinda ugly, but HTML parsing, you see.
+	Takes in the field parameters and builds JSON.
 	"""
-	global station_codes
-
 	response = {}
 
-	for i in range(len(FIELDS_1)):
-		response[FIELDS_1[i]] = data[0][i].replace('*', '')
-
-	for j in range(len(FIELDS_2)):
-		response[FIELDS_2[j]] = {'code' : data[1][j], 'name' : station_codes[data[1][j]]}
-
-	for k in range(len(FIELDS_3)):
-		response[FIELDS_3[k]] = data[2][k]
-
-	response['passenger'] = []
-	groups = groupify_passengers(data[3])
-	for passenger in groups:
-		response['passenger'].append({FIELDS_4[0] : passenger[0], FIELDS_4[1] : passenger[1]})
-
-	response[FIELDS_5[0]] = data[4]
+	for i in range(len(FIELDS)):
+		response[FIELDS[i]] = data[i]
 
 	return response
 

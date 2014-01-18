@@ -1,35 +1,14 @@
-PARAM_NAME = "lccp_pnrno1"
+BASE_URL = "http://www.codechef.com/users/"
 
-BASE_URL = "http://www.indianrail.gov.in/cgi_bin/inet_pnrstat_cgi.cgi"
+ID_REGEX_STRICT = r'^[a-z]{1}[a-z0-9_]{3,13}$'
 
-PNR_REGEX_STRICT = r'^[0-9]{10}$'
+MAGIC_CLASS = 'rating-table'
 
-MAGIC_CLASS = 'table_border_both'
-
-FIELDS_1 = (
-		'train_number',
-		'train_name',
-		'travel_date',
+FIELDS = (
+		'long_global',
+		'long_country',
+		'long_rating',
+		'short_global',
+		'short_country',
+		'short_rating',
 	)
-
-FIELDS_2 = (
-		'from',
-		'to',
-		'alight',
-		'board',
-	)
-
-FIELDS_3 = (
-		'class',
-	)
-
-FIELDS_4 = (
-		'status',
-		'seat_number',
-	)
-
-FIELDS_5 = (
-		'chart_prepared',
-	)
-
-STATION_CODES_FILE = 'station_codes.json'
