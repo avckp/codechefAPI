@@ -6,7 +6,15 @@ from utils import *
 
 app = Flask(__name__)
 
-@app.route('/codechef/<id>')
+@app.route('/')
+def home():
+	"""
+	Static Home Page
+	"""
+	return render_template('home.html')
+
+
+@app.route('/ranks/<id>')
 def codechef_api(id):
 	"""
 	Returns the user stat in JSON after fetching from Codechef.
