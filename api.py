@@ -12,7 +12,7 @@ def codechef_api(id):
 	Returns the user stat in JSON after fetching from Codechef.
 	"""
 	if is_user_valid(id):
-		response = requests.post(BASE_URL, data={PARAM_NAME : id})
+		response = requests.post(BASE_URL + id)
 		if response.status_code is 200:
 			user_data = parse_html(response.content)
 

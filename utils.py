@@ -22,13 +22,17 @@ def parse_html(html):
 		return None
 
 	long_global=elements[0].getchildren()[1].getchildren()[1].getchildren()[0].getchildren()[0].text
-	long_country=elements[0].getchildren()[1].getchildren()[1].getchildren()[1].getchildren()[0].text
-    long_rating=elements[0].getchildren()[1].getchildren()[2].text
-
-    short_global=elements[0].getchildren()[2].getchildren()[1].getchildren()[0].getchildren()[0].text
-    short_country=elements[0].getchildren()[2].getchildren()[1].getchildren()[1].getchildren()[0].text
-    short_rating=elements[0].getchildren()[1].getchildren()[2].text
-
+	if(long_global!='NA'):
+		long_country=elements[0].getchildren()[1].getchildren()[1].getchildren()[1].getchildren()[0].text
+	else:
+		long_country='NA'
+	long_rating=elements[0].getchildren()[1].getchildren()[2].text
+	short_global=elements[0].getchildren()[2].getchildren()[1].getchildren()[0].getchildren()[0].text
+	if(short_global!='NA'):
+		short_country=elements[0].getchildren()[2].getchildren()[1].getchildren()[1].getchildren()[0].text
+	else:
+		short_country='NA'
+	short_rating=elements[0].getchildren()[1].getchildren()[2].text
 	return (long_global,long_country,long_rating,short_global,short_country,short_rating)
 
 def build_response_dict(data):
@@ -41,9 +45,3 @@ def build_response_dict(data):
 		response[FIELDS[i]] = data[i]
 
 	return response
-
-
-
-
-
-
